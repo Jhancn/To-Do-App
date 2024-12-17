@@ -1,5 +1,5 @@
 :root {
-    --gradient: linear-gradient(270deg, rgba(200, 255, 0, 0.2) 0%, rgba(119, 111, 168, 0.7) 50%, rgba(200, 255, 0, 0.2) 100%);
+    --gradient: linear-gradient(270deg, #e5b3eca1 0%, rgba(119, 111, 168, 0.7) 50%, #e5b3eca1 100%);
     --light-blue: rgb(50, 106, 180);
     --white: #fff;
     --dark-violet: #e5b3eca1;
@@ -14,6 +14,23 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.5s ease-in-out;
+    animation: bodyAnimation 15s infinite alternate;
+}
+
+/* Animation to create a subtle shift in the background */
+@keyframes bodyAnimation {
+    0% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 50% 50%;
+    }
+    100% {
+        background-position: 0% 100%;
+    }
 }
 
 body::before {
@@ -23,34 +40,95 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url(./bg3.jpg) no-repeat center center/cover;
-    filter: blur(0.1px);
+    background: rgba(255, 255, 255, 0.4);
+    filter: blur(100px);
+    animation: shiftingBlur 10s ease-in-out infinite;
     z-index: -1;
+    transition: filter 0.3s ease-in-out;
+}
+
+/* Adding a shifting blur animation */
+@keyframes shiftingBlur {
+    0% {
+        filter: blur(5px);
+    }
+    50% {
+        filter: blur(10px);
+    }
+    100% {
+        filter: blur(5px);
+    }
 }
 
 .todo {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: flex-start;
     border-radius: 2rem;
     background: url(./background.jpg) no-repeat center center/cover;
-    width: 50%;
-    max-width: 20rem;
+    width: 60%;
+    max-width: 500px;
+    max-height: 80vh;
     padding: 2rem;
     box-shadow: 0 0.5rem 1rem 0.5rem var(--dark-violet);
     margin-top: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s forwards, scaleUp 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.95);
+    }
+    to {
+        transform: scale(1);
+    }
 }
 
 .header-container {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
+    animation: slideIn 1s ease-out;
 }
 
 h2 {
     text-transform: uppercase;
     color: var(--violet);
     text-align: center;
+    animation: textGlow 2s ease-in-out infinite;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 10px var(--violet), 0 0 20px var(--violet);
+    }
+    50% {
+        text-shadow: 0 0 20px var(--violet), 0 0 30px var(--violet);
+    }
+    100% {
+        text-shadow: 0 0 10px var(--violet), 0 0 20px var(--violet);
+    }
 }
 
 .button-container {
@@ -67,6 +145,13 @@ h2 {
     border-radius: 0.5rem;
     cursor: pointer;
     color: rgb(255, 251, 251);
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.view-btn:hover,
+.search-btn:hover {
+    background-color: #d1a7d7;
+    transform: scale(1.05);
 }
 
 .search-btn {
@@ -79,6 +164,12 @@ h2 {
     padding: 0.5rem;
     border: 1px solid var(--dark-violet);
     border-radius: 0.5rem;
+    transition: border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.search-input:focus {
+    border-color: #715a63;
+    transform: scale(1.02);
 }
 
 .search-input.hidden {
@@ -89,7 +180,7 @@ h2 {
     display: flex;
     justify-content: space-around;
     margin-bottom: 25px;
-    gap:10px;
+    gap: 10px;
 }
 
 .input-field {
@@ -101,10 +192,16 @@ h2 {
     border-radius: 30px;
     color: var(--white);
     font-size: 16px;
+    transition: border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .input-field::placeholder {
     color: var(--white);
+}
+
+.input-field:focus {
+    border-color: #715a63;
+    transform: scale(1.02);
 }
 
 .add-button {
@@ -116,12 +213,26 @@ h2 {
     border-radius: 40px;
     width: 40px;
     height: 40px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.add-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px var(--dark-violet);
 }
 
 .todos-container {
     overflow-y: auto;
-    max-height: 300px;
-    margin-bottom: 10px;
+    margin: 1rem 0;
+    border: 2px solid var(--dark-violet);
+    border-radius: 10px;
+    transition: max-height 0.3s ease-in-out, transform 0.3s ease-in-out;
+    max-height: 90vh;
+    min-height: 0px;
+}
+
+.todos-container:empty {
+    max-height: 0;
 }
 
 .todos-container::-webkit-scrollbar {
@@ -142,11 +253,29 @@ h2 {
     border: 1px solid var(--dark-violet);
     border-radius: 10px;
     background-color: var(--violet);
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.todo-item.completed span {
-    text-decoration: line-through;
-    color: #4CAF50;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.todo-item:hover {
+    transform: scale(1.02);
+    background-color: #ba9ea8;
+    box-shadow: 0 0 10px var(--dark-violet);
 }
 
 .todo-item button {
@@ -154,28 +283,39 @@ h2 {
     font-size: 0.9rem;
     border-radius: 20px;
     cursor: pointer;
-}
-
-.todo-item button:nth-child(2) {
-    background-color: #A52254;
-}
-
-.todo-item button:nth-child(3) {
-    background-color: #4D0D32;
-}
-
-.todo-item button:nth-child(4) {
-    background-color: #2196F3;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .todo-item button:hover {
-    transform: scale(1.05);
+    background-color: #a1a1a1;
+    transform: scale(1.1);
+}
+.todo-item button:nth-child(1) {
+    background-color: #715a63;
 }
 
+.todo-item button:nth-child(2) {
+    background-color: #9c2754;
+}
+
+.todo-item button:nth-child(3) {
+    background-color: #ca7aa9;
+}
 .filters {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .filter,
@@ -185,19 +325,18 @@ h2 {
     border-radius: 100px;
     border: 2px solid var(--dark-violet);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .filter:hover,
 .filter.active,
 .delete-all:hover {
     background-color: var(--dark-violet);
+    transform: scale(1.05);
 }
 
 .counter-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
+    display: none;
 }
 
 @media screen and (max-width: 768px) {
