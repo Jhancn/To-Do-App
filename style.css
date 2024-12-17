@@ -1,0 +1,215 @@
+:root {
+    --gradient: linear-gradient(270deg, rgba(200, 255, 0, 0.2) 0%, rgba(119, 111, 168, 0.7) 50%, rgba(200, 255, 0, 0.2) 100%);
+    --light-blue: rgb(50, 106, 180);
+    --white: #fff;
+    --dark-violet: #e5b3eca1;
+    --violet: #ffffffcc;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: url(./bg3.jpg) no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url(./bg3.jpg) no-repeat center center/cover;
+    filter: blur(0.1px);
+    z-index: -1;
+}
+
+.todo {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-radius: 2rem;
+    background: url(./background.jpg) no-repeat center center/cover;
+    width: 50%;
+    max-width: 20rem;
+    padding: 2rem;
+    box-shadow: 0 0.5rem 1rem 0.5rem var(--dark-violet);
+    margin-top: 1rem;
+}
+
+.header-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    text-transform: uppercase;
+    color: var(--violet);
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.view-btn,
+.search-btn {
+    padding: 0.5rem 1rem;
+    background: var(--dark-violet);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    color: rgb(255, 251, 251);
+}
+
+.search-btn {
+    font-size: 1.5em;
+    color: var(--white);
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--dark-violet);
+    border-radius: 0.5rem;
+}
+
+.search-input.hidden {
+    display: none;
+}
+
+.input {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    gap:10px;
+}
+
+.input-field {
+    flex: 1;
+    outline: none;
+    padding: 10px 20px;
+    background-color: transparent;
+    border: 2px solid var(--dark-violet);
+    border-radius: 30px;
+    color: var(--white);
+    font-size: 16px;
+}
+
+.input-field::placeholder {
+    color: var(--white);
+}
+
+.add-button {
+    border: none;
+    background: var(--dark-violet);
+    color: var(--white);
+    font-size: 35px;
+    cursor: pointer;
+    border-radius: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+.todos-container {
+    overflow-y: auto;
+    max-height: 300px;
+    margin-bottom: 10px;
+}
+
+.todos-container::-webkit-scrollbar {
+    width: 7px;
+}
+
+.todos-container::-webkit-scrollbar-thumb {
+    background: #d5d5d5;
+    border-radius: 20px;
+}
+
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--dark-violet);
+    border-radius: 10px;
+    background-color: var(--violet);
+}
+
+.todo-item.completed span {
+    text-decoration: line-through;
+    color: #4CAF50;
+}
+
+.todo-item button {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.todo-item button:nth-child(2) {
+    background-color: #A52254;
+}
+
+.todo-item button:nth-child(3) {
+    background-color: #4D0D32;
+}
+
+.todo-item button:nth-child(4) {
+    background-color: #2196F3;
+}
+
+.todo-item button:hover {
+    transform: scale(1.05);
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.filter,
+.delete-all {
+    color: var(--white);
+    padding: 5px 15px;
+    border-radius: 100px;
+    border: 2px solid var(--dark-violet);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filter:hover,
+.filter.active,
+.delete-all:hover {
+    background-color: var(--dark-violet);
+}
+
+.counter-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+    .todo {
+        width: 90%;
+    }
+
+    .input-field {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+    }
+}

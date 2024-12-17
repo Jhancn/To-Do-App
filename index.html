@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="todo">
+        <!-- Header -->
+        <div class="header-container">
+            <h2>To-Do List</h2>
+        </div>
+
+        <!-- View All Todos Button and Search Button -->
+        <div class="button-container">
+            <!-- View All Todos Button -->
+            <button class="btn view-btn" onclick="viewAllTodos()">
+                View All Todos
+            </button>
+            <div class="search-container">
+                <button class="btn search-btn" onclick="toggleSearch()">⌕</button>
+                <input type="text" class="input-field search-input hidden" id="searchInput" placeholder="Search todos"
+                    oninput="searchTodos(this.value)" />
+            </div>
+        </div>
+
+        <!-- Input for adding new todos -->
+        <div class="input">
+            <input class="input-field" type="text" id="todoInput" placeholder="Add a new task...">
+            <button class="add-button">
+                <i class="fa fa-plus-circle"></i>
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter" data-filter="completed">Complete</div>
+            <div class="filter" data-filter="pending">Incomplete</div>
+            <div class="delete-all">Delete All</div>
+        </div>
+
+        <!-- Todo List Container -->
+        <div class="todos-container">
+            <ul  id="todoList" class="todos"></ul>
+        </div>
+
+        
+
+        <!-- Counter -->
+        <hr class="counter" />
+        <div class="counter-container">
+            <p><span>0</span> todos total</p>
+        </div>
+    </section>
+
+    <script>
+        // Variables
+        const addButton = document.querySelector(".add-button");
+        const todoInput = document.getElementById("todoInput");
+        const todoList = document.getElementById("todoList");
+        const deleteButton = document.querySelector(".delete-all");
+        const filters = document.querySelectorAll(".filter");
+        let filter = '';
+        let todos = [];
+
+        // Toggle the search input visibility
+        function toggleSearch() {
+            const searchInput = document.getElementById("searchInput");
+            searchInput.classList.toggle("hidden");
+            if (!searchInput.classList.contains("hidden")) {
+                searchInput.focus();
+            }
+        }
+
+        // Add a new todo
+        addButton.addEventListener("click", () => {
+            let todo = todoInput.value.trim();
+            if (!todo) return;
+            addTodo(todo);
+        });
+
+        function addTodo(todoText) {
+            const todo = {
+                id: Date.now(),
+                text: todoText,
+                date: new Date().toLocaleString(),  // Store full date and time
+                isCompleted: false,
+                isEditing: false,
+            };
+            todos.push(todo);
+            renderTodos();
+            todoInput.value = "";
+            const todosContainer = document.querySelector('.todos-container');
+            todosContainer.scrollTop = todosContainer.scrollHeight;
+        }
+
+        // Delete a specific todo
+        function deleteTodo(id) {
+            todos = todos.filter(todo => todo.id !== id);
+            renderTodos();
+        }
+
+        // Toggle completion status
+        function toggleCompletion(id) {
+            todos = todos.map(todo => {
+                if (todo.id === id) todo.isCompleted = !todo.isCompleted;
+                return todo;
+            });
+            renderTodos();
+        }
+
+        // Edit a todo
+        function editTodo(id) {
+            todos = todos.map(todo => {
+                if (todo.id === id) todo.isEditing = true;
+                return todo;
+            });
+            renderTodos();
+        }
+
+        // Update a todo
+        function updateTodo(id, updatedText) {
+            todos = todos.map(todo => {
+                if (todo.id === id) {
+                    todo.text = updatedText;
+                    todo.isEditing = false;
+                }
+                return todo;
+            });
+            renderTodos();
+        }
+
+        // Delete all todos
+        deleteButton.addEventListener("click", () => {
+            todos = [];
+            renderTodos();
+        });
+
+        // Filter todos
+        filters.forEach(filterBtn => {
+            filterBtn.addEventListener("click", () => {
+                filter = filterBtn.dataset.filter;
+                renderTodos();
+            });
+        });
+
+        // Render todos
+        function renderTodos() {
+            todoList.innerHTML = "";
+            const filteredTodos = todos.filter(todo => {
+                if (filter === 'completed') return todo.isCompleted;
+                if (filter === 'pending') return !todo.isCompleted;
+                return true;
+            });
+
+            filteredTodos.forEach(todo => {
+                const li = document.createElement("li");
+                li.className = "todo-item";
+                if (todo.isEditing) {
+                    li.innerHTML = `
+                        <input type="text" class="edit-input" value="${todo.text}" id="editInput_${todo.id}" />
+                        <button onclick="updateTodo(${todo.id}, document.getElementById('editInput_${todo.id}').value)">Update</button>
+                    `;
+                } else {
+                    li.innerHTML = `
+                        <span>${todo.text} (${todo.date})</span>
+                        <div class="todo-item-buttons">
+                            <button onclick="editTodo(${todo.id})">Edit</button>
+                            <button onclick="deleteTodo(${todo.id})">Delete</button>
+                            <button onclick="toggleCompletion(${todo.id})">${todo.isCompleted ? 'Undo' : 'Complete'}</button>
+                        </div>
+                    `;
+                }
+                todoList.appendChild(li);
+            });
+
+            document.querySelector(".counter-container span").textContent = todos.length;
+        }
+
+        // Add todos on Enter key
+        todoInput.addEventListener("keypress", e => {
+            if (e.key === "Enter") addTodo(todoInput.value);
+        });
+
+        // Search todos
+        function searchTodos(keyword) {
+            const filteredTodos = todos.filter(todo =>
+                todo.text.toLowerCase().includes(keyword.toLowerCase())
+            );
+            renderSearchResults(filteredTodos);
+        }
+
+        // View All Todos function
+        function viewAllTodos() {
+            filter = '';  // Show all todos, regardless of their status
+            renderTodos();
+        }
+
+        function renderSearchResults(filteredTodos) {
+            todoList.innerHTML = "";
+            filteredTodos.forEach(todo => {
+                const li = document.createElement("li");
+                li.className = "todo-item";
+                li.innerHTML = `
+                    <span>${todo.text} (${todo.date})</span>
+                    <div class="todo-item-buttons">
+                        <button onclick="editTodo(${todo.id})">Edit</button>
+                        <button onclick="deleteTodo(${todo.id})">Delete</button>
+                        <button onclick="toggleCompletion(${todo.id})">${todo.isCompleted ? 'Undo' : 'Complete'}</button>
+                    </div>
+                `;
+                todoList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
